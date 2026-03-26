@@ -7,7 +7,8 @@ import {
   createProject, 
   updateProject,
   deleteProject,
-  uploadProjectAsset
+  uploadProjectAsset,
+  getProjectCategories
 } from '../controllers/projectController.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
 import { upload } from '../config/cloudinary.js';
@@ -16,6 +17,7 @@ const router = express.Router();
 
 // Public routes
 router.get('/public', getPublicProjects);
+router.get('/categories', getProjectCategories);
 router.get('/public/home', getHomeProjects);
 router.get('/public/:slug', getPublicProject);
 

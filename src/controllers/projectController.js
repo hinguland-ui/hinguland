@@ -3,8 +3,23 @@ import Project from '../models/Project.js';
 // @route   GET /api/projects/public
 export const getPublicProjects = async (req, res) => {
   try {
-    const projects = await Project.find({});
+    const { category } = req.query;
+    const filter = category && category !== 'all' ? { category } : {};
+    const projects = await Project.find(filter).sort({ createdAt: -1 });
     res.json({ success: true, data: projects });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    Get all unique project categories
+// @route   GET /api/projects/categories
+export const getProjectCategories = async (req, res) => {
+  try {
+    const categories = await Project.distinct('category');
+    // Filter out null/undefined/empty/whitespace and sort
+    const filteredCategories = categories.filter(c => c && typeof c === 'string' && c.trim()).sort();
+    res.json({ success: true, data: filteredCategories });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
