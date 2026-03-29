@@ -111,7 +111,7 @@ app.use('/api/', limiter);
 // Optimized CORS for production
 app.use(cors({
     origin: process.env.NODE_ENV === 'production' 
-        ? ['https://hinguland.com', 'https://www.hinguland.com'] 
+        ? ['https://hinguland.com', 'https://www.hinguland.com', 'https://silu.hinguland.com'] 
         : ['http://localhost:5173', 'http://localhost:3000'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
