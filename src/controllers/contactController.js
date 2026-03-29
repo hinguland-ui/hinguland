@@ -1,9 +1,33 @@
 import Inquiry from '../models/Inquiry.js';
+import Setting from '../models/Setting.js';
 import { sendEmail } from '../utils/emailService.js';
+import { verifyRecaptchaToken } from '../utils/recaptchaService.js';
 
 export const submitContact = async (req, res) => {
   try {
-    const { name, email, phone, service, message } = req.body;
+    const { name, email, phone, service, message, recaptchaToken } = req.body;
+    
+    // Verify reCAPTCHA if enabled
+    const recaptchaSettings = await Setting.findOne({ key: 'recaptcha_config' });
+    if (recaptchaSettings?.value?.enabled) {
+      const secretKey = recaptchaSettings.value.secretKey;
+      const minScore = recaptchaSettings.value.minScore || 0.5;
+      
+      if (!recaptchaToken) {
+        return res.status(400).json({ 
+          success: false, 
+          message: 'Please complete the security verification.' 
+        });
+      }
+      
+      const recaptchaResult = await verifyRecaptchaToken(recaptchaToken, secretKey, minScore);
+      if (!recaptchaResult.success) {
+        return res.status(400).json({ 
+          success: false, 
+          message: recaptchaResult.error || 'Security verification failed. Please try again.' 
+        });
+      }
+    }
     
     // Save to database
     const inquiry = new Inquiry({ 

@@ -52,7 +52,7 @@ export const getPublicSettings = async (req, res) => {
       res.setHeader('X-Cache', 'HIT');
       return res.json({ success: true, data: cached });
     }
-    const settings = await Setting.find({ group: { $in: ['general', 'seo'] } }).lean();
+    const settings = await Setting.find({ group: { $in: ['general', 'seo', 'security'] } }).lean();
     const settingsObj = {};
     settings.forEach(s => {
       settingsObj[s.key] = s.value;
