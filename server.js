@@ -50,13 +50,30 @@ app.use((req, res, next) => {
 // 1.2 Response Time Tracking Middleware
 app.use((req, res, next) => {
     req.startTime = Date.now();
-    res.on('finish', () => {
+    
+    const originalEnd = res.end.bind(res);
+    const originalJson = res.json.bind(res);
+    
+    const setResponseTime = () => {
         const duration = Date.now() - req.startTime;
-        res.setHeader('X-Response-Time', `${duration}ms`);
+        if (!res.headersSent) {
+            res.setHeader('X-Response-Time', `${duration}ms`);
+        }
         if (duration > 1000) {
             console.warn(`⚠️ Slow request: ${req.method} ${req.originalUrl} took ${duration}ms`);
         }
-    });
+    };
+    
+    res.end = (...args) => {
+        setResponseTime();
+        return originalEnd(...args);
+    };
+    
+    res.json = (...args) => {
+        setResponseTime();
+        return originalJson(...args);
+    };
+    
     next();
 });
 
