@@ -47,6 +47,19 @@ app.use((req, res, next) => {
     next();
 });
 
+// 1.2 Response Time Tracking Middleware
+app.use((req, res, next) => {
+    req.startTime = Date.now();
+    res.on('finish', () => {
+        const duration = Date.now() - req.startTime;
+        res.setHeader('X-Response-Time', `${duration}ms`);
+        if (duration > 1000) {
+            console.warn(`⚠️ Slow request: ${req.method} ${req.originalUrl} took ${duration}ms`);
+        }
+    });
+    next();
+});
+
 // 2. Data Sanitization AGAINST NoSQL Injection (Anti-Hack)
 app.use(mongoSanitize());
 
@@ -55,7 +68,14 @@ app.use(hpp());
 
 // --- Performance Middleware ---
 // 1. Gzip Compression (Zips responses for 2x-3x faster loading)
-app.use(compression());
+app.use(compression({
+    level: 6, // Balance between compression and CPU usage
+    threshold: 1024, // Only compress responses > 1KB
+    filter: (req, res) => {
+        if (req.headers['x-no-compression']) return false;
+        return compression.filter(req, res);
+    }
+}));
 
 // 2. Rate Limiting (Prevents DDoS and Brute Force)
 const limiter = rateLimit({
@@ -64,14 +84,28 @@ const limiter = rateLimit({
     message: {
         success: false,
         message: 'Too many requests from this IP, please try again later.'
-    }
+    },
+    standardHeaders: true,
+    legacyHeaders: false,
 });
 app.use('/api/', limiter);
 
 // --- Standard Middleware ---
-app.use(cors());
+// Optimized CORS for production
+app.use(cors({
+    origin: process.env.NODE_ENV === 'production' 
+        ? ['https://hinguland.com', 'https://www.hinguland.com'] 
+        : ['http://localhost:5173', 'http://localhost:3000'],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+}));
+
 app.use(express.json({ limit: '50mb' })); // Body parser, expanded for rich content blogs
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+
+// Trust proxy for accurate client IP behind reverse proxy
+app.set('trust proxy', 1);
 
 // Public API Routes
 app.use('/api/contact', contactRoutes);
