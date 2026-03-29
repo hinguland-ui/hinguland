@@ -109,10 +109,23 @@ app.use('/api/', limiter);
 
 // --- Standard Middleware ---
 // Optimized CORS for production
+const allowedOrigins = [
+  'https://hinguland.com',
+  'https://www.hinguland.com',
+  'https://silu.hinguland.com',
+  'http://localhost:5173',
+  'http://localhost:3000'
+];
+
 app.use(cors({
-    origin: process.env.NODE_ENV === 'production' 
-        ? ['https://hinguland.com', 'https://www.hinguland.com', 'https://silu.hinguland.com'] 
-        : ['http://localhost:5173', 'http://localhost:3000'],
+    origin: function (origin, callback) {
+        // Allow requests with no origin (mobile apps, curl, etc)
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        }
+        return callback(null, true); // Allow all origins for now (DEBUG)
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
