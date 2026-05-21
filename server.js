@@ -45,6 +45,7 @@ const app = express();
 // --- Security Middleware ---
 // 1. Set Security Headers (Anti-XSS, Anti-Clickjacking)
 app.use(helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
     contentSecurityPolicy: false,
 }));
 
