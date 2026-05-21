@@ -138,8 +138,8 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 
-app.use(express.json({ limit: '50mb' })); // Body parser, expanded for rich content blogs
-app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+app.use(express.json({ limit: '200mb' })); // Body parser, expanded for rich content blogs
+app.use(express.urlencoded({ extended: true, limit: '200mb' }));
 
 // Serve local uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
