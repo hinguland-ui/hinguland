@@ -123,7 +123,6 @@ export const getAdminProjects = async (req, res) => {
   try {
     // Use lean() for faster queries, select only needed fields
     const projects = await Project.find({})
-      .select('name slug category status main_image is_on_home createdAt')
       .sort({ createdAt: -1 })
       .lean();
     res.json({ success: true, data: projects });
