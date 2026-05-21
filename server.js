@@ -20,7 +20,14 @@ import mediaRoutes from './src/routes/mediaRoutes.js';
 import analyticsRoutes from './src/routes/analyticsRoutes.js';
 import contactRoutes from './src/routes/contactRoutes.js';
 import blogRoutes from './src/routes/blogRoutes.js';
+import uploadLocalRoutes from './src/routes/uploadLocalRoutes.js';
 import { getPublicSettings } from './src/controllers/settingController.js';
+
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 import helmet from 'helmet';
 import compression from 'compression';
@@ -134,6 +141,9 @@ app.use(cors({
 app.use(express.json({ limit: '50mb' })); // Body parser, expanded for rich content blogs
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
+// Serve local uploads
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // Trust proxy for accurate client IP behind reverse proxy
 app.set('trust proxy', 1);
 
@@ -167,6 +177,7 @@ app.use('/api/admin/settings', settingRoutes);
 app.use('/api/admin/payments', paymentRoutes);
 app.use('/api/admin/media', mediaRoutes);
 app.use('/api/admin/analytics', analyticsRoutes);
+app.use('/api/admin/local-uploads', uploadLocalRoutes);
 
 // Compatibility fallback for direct /api/pages calls
 app.use('/api/pages', pageRoutes); 
