@@ -177,6 +177,11 @@ app.get('/robots.txt', (req, res) => {
     res.send("User-agent: *\nDisallow: /");
 });
 
+// Warmup / Keep-Alive endpoint (frontend is pe startup mein ping karta hai cold start rokne ke liye)
+app.get('/api/ping', (req, res) => {
+  res.status(200).json({ ok: true, ts: Date.now() });
+});
+
 // Basic Health Check
 app.get('/', (req, res) => {
   res.send('Hinguland Node.js API is running...');

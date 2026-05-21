@@ -18,6 +18,14 @@ const projectSchema = new mongoose.Schema({
   date: { type: String },
 }, { timestamps: true });
 
+// ─── Performance Indexes ─────────────────────────────────────────────────────
+// Home page query: Project.find({ is_on_home: true }) — ab instant hoga
+projectSchema.index({ is_on_home: 1 });
+// Category filter + sort: Project.find({ category }).sort({ createdAt: -1 }) — ab instant hoga
+projectSchema.index({ category: 1, createdAt: -1 });
+// Public projects default sort
+projectSchema.index({ createdAt: -1 });
+
 transformSchema(projectSchema);
 const Project = mongoose.model('Project', projectSchema);
 
