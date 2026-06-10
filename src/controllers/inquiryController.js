@@ -48,4 +48,16 @@ export const deleteInquiry = async (req, res) => {
   }
 };
 
-
+export const updateInquiryStatus = async (req, res) => {
+  try {
+    const inquiry = await Inquiry.findById(req.params.id);
+    if (!inquiry) return res.status(404).json({ message: 'Inquiry not found' });
+    
+    inquiry.status = req.body.status || inquiry.status;
+    const updatedInquiry = await inquiry.save();
+    
+    res.json({ success: true, data: updatedInquiry });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};

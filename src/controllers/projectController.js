@@ -39,7 +39,7 @@ export const getPublicProjects = async (req, res) => {
     // Cache the results
     setCached(cacheKey, projects);
     res.setHeader('X-Cache', 'MISS');
-    res.setHeader('Cache-Control', 'public, max-age=300'); // 5 min browser cache
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.json({ success: true, data: projects });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -63,7 +63,7 @@ export const getProjectCategories = async (req, res) => {
     
     setCached(cacheKey, filteredCategories);
     res.setHeader('X-Cache', 'MISS');
-    res.setHeader('Cache-Control', 'public, max-age=300');
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.json({ success: true, data: filteredCategories });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -86,7 +86,7 @@ export const getPublicProject = async (req, res) => {
     
     setCached(cacheKey, project);
     res.setHeader('X-Cache', 'MISS');
-    res.setHeader('Cache-Control', 'public, max-age=300');
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.json({ success: true, data: project });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -110,7 +110,7 @@ export const getHomeProjects = async (req, res) => {
     
     setCached(cacheKey, projects);
     res.setHeader('X-Cache', 'MISS');
-    res.setHeader('Cache-Control', 'public, max-age=300');
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.json({ success: true, data: projects });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

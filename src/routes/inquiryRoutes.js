@@ -1,5 +1,5 @@
 import express from 'express';
-import { getInquiries, createInquiry, deleteInquiry } from '../controllers/inquiryController.js';
+import { getInquiries, createInquiry, deleteInquiry, updateInquiryStatus } from '../controllers/inquiryController.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
@@ -10,5 +10,8 @@ router.route('/')
 
 router.route('/:id')
   .delete(protect, admin, deleteInquiry);
+
+router.route('/:id/status')
+  .put(protect, admin, updateInquiryStatus);
 
 export default router;
