@@ -105,7 +105,7 @@ app.use(compression({
 // 2. Rate Limiting (Prevents DDoS and Brute Force)
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: process.env.NODE_ENV === 'development' ? 2000 : 200, // More lenient in dev for hot-reloads
+    max: process.env.NODE_ENV === 'development' ? 5000 : 3000, // Increased to support Astro parallel SSG builds
     message: {
         success: false,
         message: 'Too many requests from this IP, please try again later.'
