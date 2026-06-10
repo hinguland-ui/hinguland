@@ -122,7 +122,8 @@ const allowedOrigins = [
   'https://www.hinguland.com',
   'https://silu.hinguland.com',
   'http://localhost:5173',
-  'http://localhost:3000'
+  'http://localhost:3000',
+  'http://localhost:4321'
 ];
 
 app.use(cors({

@@ -1,5 +1,5 @@
 import express from 'express';
-import { getSettings, getSettingsByGroup, updateSettings, uploadLogo, uploadFavicon, getPublicSettings } from '../controllers/settingController.js';
+import { getSettings, getSettingsByGroup, updateSettings, uploadLogo, uploadFavicon, getPublicSettings, testSmtp } from '../controllers/settingController.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
 import { upload } from '../config/cloudinary.js';
 
@@ -12,6 +12,7 @@ router.route('/')
 
 router.post('/logo', protect, admin, upload.single('logo'), uploadLogo);
 router.post('/favicon', protect, admin, upload.single('favicon'), uploadFavicon);
+router.post('/test-smtp', protect, admin, testSmtp);
 
 router.get('/:group', protect, admin, getSettingsByGroup);
 

@@ -1,4 +1,5 @@
 import Setting from '../models/Setting.js';
+import { sendEmail } from '../utils/emailService.js';
 
 // Simple cache for settings
 const cache = new Map();
@@ -114,4 +115,24 @@ export const uploadFavicon = async (req, res) => {
   }
 };
 
-
+export const testSmtp = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ success: false, message: 'Email is required' });
+    }
+    const result = await sendEmail({
+      to: email,
+      subject: 'Test SMTP from Hinguland',
+      text: 'This is a test email to verify your SMTP configuration in Hinguland.',
+      html: '<p>This is a test email to verify your SMTP configuration in <strong>Hinguland</strong>.</p>'
+    });
+    if (result.success) {
+      res.json({ success: true, message: 'Test email sent successfully' });
+    } else {
+      res.status(500).json({ success: false, message: result.message });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
